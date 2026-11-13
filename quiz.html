@@ -1,10 +1,735 @@
-Buatkan web-app dalam SATU file HTML
-(HTML, CSS, dan JavaScript digabung),
-tanpa server dan tanpa instalasi.
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#10172a">
+  <title>Quiz Informatika Kelas 8</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #10172a;
+      --panel: rgba(25, 35, 58, 0.88);
+      --panel-soft: #1b2741;
+      --text: #f3f6ff;
+      --muted: #aab6d0;
+      --accent: #73e0c1;
+      --accent-dark: #193f3c;
+      --purple: #a99bff;
+      --wrong: #ff8296;
+      --border: rgba(190, 205, 239, 0.14);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
 
-Tujuan  : [kuis 10 soal gerak lurus]
-Pengguna: siswa SMA, dipakai di HP
-Fitur   : 1) [...]  2) [...]  3) [...]
+    * { box-sizing: border-box; }
 
-Tampilan sederhana dan rapi.
-Semua teks dan komentar kode dalam bahasa Indonesia.
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 32px 18px;
+      color: var(--text);
+      background:
+        radial-gradient(ellipse at 12% 8%, rgba(84, 105, 208, 0.24), transparent 34rem),
+        radial-gradient(ellipse at 90% 86%, rgba(37, 173, 148, 0.15), transparent 32rem),
+        var(--bg);
+    }
+
+    button, input { font: inherit; }
+    button { color: inherit; }
+
+    .app {
+      width: min(100%, 850px);
+      margin: 0 auto;
+    }
+
+    .topline {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      font-size: 0.95rem;
+      font-weight: 750;
+      letter-spacing: 0.02em;
+    }
+
+    .brand-mark {
+      display: grid;
+      width: 40px;
+      height: 40px;
+      place-items: center;
+      border: 1px solid rgba(115, 224, 193, 0.4);
+      border-radius: 13px;
+      color: var(--accent);
+      background: rgba(115, 224, 193, 0.1);
+      font-size: 1.18rem;
+    }
+
+    .class-pill, .tag {
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      color: var(--muted);
+      background: rgba(255, 255, 255, 0.035);
+      font-size: 0.78rem;
+      font-weight: 650;
+    }
+
+    .class-pill { padding: 8px 12px; }
+
+    .hero {
+      margin-bottom: 18px;
+      padding: 25px 28px;
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      background: linear-gradient(120deg, rgba(33, 47, 77, 0.88), rgba(27, 44, 64, 0.75));
+      box-shadow: 0 18px 55px rgba(0, 0, 0, 0.18);
+    }
+
+    .eyebrow {
+      margin: 0 0 8px;
+      color: var(--accent);
+      font-size: 0.75rem;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(1.7rem, 5vw, 2.45rem);
+      letter-spacing: -0.045em;
+      line-height: 1.12;
+    }
+
+    .hero p:last-child {
+      max-width: 610px;
+      margin: 10px 0 0;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    .card {
+      overflow: hidden;
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      background: var(--panel);
+      box-shadow: 0 22px 65px rgba(0, 0, 0, 0.24);
+      backdrop-filter: blur(14px);
+    }
+
+    .setup {
+      padding: 28px;
+    }
+
+    .setup h2, .result h2 {
+      margin: 0 0 8px;
+      font-size: 1.25rem;
+    }
+
+    .setup-copy {
+      margin: 0 0 22px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .name-label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 0.88rem;
+      font-weight: 700;
+    }
+
+    .name-input {
+      width: 100%;
+      min-height: 48px;
+      padding: 0 14px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      outline: none;
+      color: var(--text);
+      background: rgba(9, 15, 29, 0.56);
+    }
+
+    .name-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(115, 224, 193, 0.12);
+    }
+
+    .quiz-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 9px;
+      margin: 19px 0 22px;
+    }
+
+    .tag { padding: 7px 10px; }
+    .tag strong { color: var(--text); }
+
+    .primary, .secondary {
+      min-height: 46px;
+      padding: 0 18px;
+      border: 0;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 800;
+      transition: transform 140ms ease, filter 140ms ease, background 140ms ease;
+    }
+
+    .primary {
+      color: #0c2622;
+      background: var(--accent);
+      box-shadow: 0 8px 22px rgba(115, 224, 193, 0.16);
+    }
+
+    .secondary {
+      border: 1px solid var(--border);
+      color: var(--text);
+      background: var(--panel-soft);
+    }
+
+    .primary:hover, .secondary:hover {
+      filter: brightness(1.08);
+      transform: translateY(-1px);
+    }
+
+    button:focus-visible {
+      outline: 3px solid var(--purple);
+      outline-offset: 3px;
+    }
+
+    .quiz { padding: 26px 28px 28px; }
+    .quiz[hidden], .setup[hidden], .result[hidden] { display: none; }
+
+    .quiz-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .question-count {
+      color: var(--muted);
+      font-size: 0.9rem;
+      font-weight: 700;
+    }
+
+    .question-count strong { color: var(--text); }
+
+    .progress-track {
+      height: 8px;
+      overflow: hidden;
+      margin-bottom: 25px;
+      border-radius: 99px;
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .progress-bar {
+      width: 0;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--accent), var(--purple));
+      transition: width 240ms ease;
+    }
+
+    .topic {
+      display: inline-flex;
+      margin-bottom: 12px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      color: #d3cbff;
+      background: rgba(169, 155, 255, 0.12);
+      font-size: 0.76rem;
+      font-weight: 750;
+    }
+
+    .question {
+      margin: 0 0 20px;
+      font-size: clamp(1.18rem, 3.2vw, 1.48rem);
+      line-height: 1.48;
+      letter-spacing: -0.015em;
+    }
+
+    .options { display: grid; gap: 10px; }
+
+    .option {
+      display: flex;
+      width: 100%;
+      min-height: 56px;
+      align-items: center;
+      gap: 12px;
+      padding: 11px 14px;
+      border: 1px solid var(--border);
+      border-radius: 13px;
+      text-align: left;
+      background: rgba(255, 255, 255, 0.035);
+      cursor: pointer;
+      line-height: 1.45;
+      transition: border-color 140ms ease, background 140ms ease, transform 140ms ease;
+    }
+
+    .option:hover:not(:disabled) {
+      transform: translateY(-1px);
+      border-color: rgba(115, 224, 193, 0.55);
+      background: rgba(115, 224, 193, 0.07);
+    }
+
+    .option:disabled { cursor: default; }
+
+    .option-key {
+      display: grid;
+      width: 30px;
+      height: 30px;
+      flex: 0 0 30px;
+      place-items: center;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      color: var(--muted);
+      font-size: 0.82rem;
+      font-weight: 800;
+    }
+
+    .option.correct {
+      border-color: rgba(115, 224, 193, 0.72);
+      background: rgba(115, 224, 193, 0.12);
+    }
+
+    .option.correct .option-key {
+      border-color: var(--accent);
+      color: #0c2622;
+      background: var(--accent);
+    }
+
+    .option.incorrect {
+      border-color: rgba(255, 130, 150, 0.62);
+      background: rgba(255, 130, 150, 0.08);
+    }
+
+    .option.incorrect .option-key {
+      border-color: var(--wrong);
+      color: #35141c;
+      background: var(--wrong);
+    }
+
+    .feedback {
+      min-height: 0;
+      margin-top: 15px;
+      padding: 0;
+      border-radius: 12px;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    .feedback:not(:empty) {
+      padding: 13px 15px;
+      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.035);
+    }
+
+    .feedback strong { color: var(--text); }
+
+    .quiz-actions {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 18px;
+    }
+
+    .result {
+      padding: 32px 28px;
+      text-align: center;
+    }
+
+    .result-icon {
+      display: grid;
+      width: 68px;
+      height: 68px;
+      margin: 0 auto 15px;
+      place-items: center;
+      border: 1px solid rgba(115, 224, 193, 0.35);
+      border-radius: 22px;
+      color: var(--accent);
+      background: rgba(115, 224, 193, 0.1);
+      font-size: 1.85rem;
+    }
+
+    .score {
+      margin: 13px 0 5px;
+      color: var(--accent);
+      font-size: clamp(2.6rem, 10vw, 4rem);
+      font-weight: 850;
+      letter-spacing: -0.06em;
+      line-height: 1;
+    }
+
+    .score-caption, .result-message { color: var(--muted); }
+
+    .result-message {
+      max-width: 530px;
+      margin: 17px auto 23px;
+      line-height: 1.65;
+    }
+
+    .result-actions {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    footer {
+      padding: 17px 4px 0;
+      color: rgba(170, 182, 208, 0.72);
+      font-size: 0.78rem;
+      text-align: center;
+    }
+
+    @media (max-width: 560px) {
+      body { padding: 18px 12px 24px; }
+      .hero { padding: 21px 19px; }
+      .setup, .quiz { padding: 22px 18px; }
+      .result { padding: 28px 18px; }
+      .quiz-head { align-items: flex-start; }
+      .brand { font-size: 0.86rem; }
+      .class-pill { font-size: 0.72rem; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <div class="topline">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true">&lt;/&gt;</span>
+        Ruang Belajar Digital
+      </div>
+      <span class="class-pill">Informatika · Kelas 8</span>
+    </div>
+
+    <header class="hero">
+      <p class="eyebrow">Tantangan pengetahuan</p>
+      <h1>Siap menguji logika<br>dan literasi digitalmu?</h1>
+      <p>Kerjakan kuis Informatika, pelajari pembahasannya, lalu lihat hasilmu. Pilih jawaban terbaik untuk setiap soal.</p>
+    </header>
+
+    <section class="card setup" id="setup">
+      <h2>Mulai kuis</h2>
+      <p class="setup-copy">Ada 12 soal pilihan ganda dari beberapa topik Informatika kelas 8. Tidak ada batas waktu—kerjakan dengan teliti.</p>
+      <label class="name-label" for="student-name">
+        Namamu <span style="color: var(--muted); font-weight: 500;">(opsional)</span>
+      </label>
+      <input class="name-input" id="student-name" type="text" maxlength="40" placeholder="Contoh: Naya" autocomplete="given-name">
+      <div class="quiz-meta" aria-label="Informasi kuis">
+        <span class="tag"><strong>12</strong> soal</span>
+        <span class="tag">Pilihan ganda</span>
+        <span class="tag">Dengan pembahasan</span>
+      </div>
+      <button class="primary" id="start-button" type="button">
+        Mulai sekarang <span aria-hidden="true">→</span>
+      </button>
+    </section>
+
+    <section class="card quiz" id="quiz" aria-live="polite" hidden>
+      <div class="quiz-head">
+        <span class="question-count">Soal <strong id="current-number">1</strong> dari <strong id="total-number">12</strong></span>
+        <span class="question-count" id="answered-count">0 dijawab</span>
+      </div>
+      <div class="progress-track" role="progressbar" aria-label="Kemajuan kuis" aria-valuemin="0" aria-valuemax="12" aria-valuenow="0">
+        <div class="progress-bar" id="progress-bar"></div>
+      </div>
+      <span class="topic" id="topic" tabindex="-1"></span>
+      <h2 class="question" id="question" tabindex="-1"></h2>
+      <div class="options" id="options"></div>
+      <div class="feedback" id="feedback" aria-live="polite"></div>
+      <div class="quiz-actions">
+        <button class="primary" id="next-button" type="button" disabled>
+          Soal berikutnya <span aria-hidden="true">→</span>
+        </button>
+      </div>
+    </section>
+
+    <section class="card result" id="result" aria-live="polite" hidden>
+      <div class="result-icon" aria-hidden="true">✦</div>
+      <h2 id="result-title">Kuis selesai!</h2>
+      <div class="score" id="score">0/12</div>
+      <div class="score-caption" id="score-caption">Jawaban benar</div>
+      <p class="result-message" id="result-message"></p>
+      <div class="result-actions">
+        <button class="primary" id="retry-button" type="button">Ulangi kuis <span aria-hidden="true">↻</span></button>
+        <button class="secondary" id="home-button" type="button">Kembali ke awal</button>
+      </div>
+    </section>
+
+    <footer>Belajar sedikit demi sedikit, berpikir kritis, dan gunakan teknologi dengan bijak.</footer>
+  </main>
+
+  <script>
+    "use strict";
+
+    const questions = [
+      {
+        topic: "Berpikir Komputasional",
+        prompt: "Saat merancang langkah-langkah untuk membuat teh, urutan instruksi yang jelas dan teratur disebut …",
+        options: ["Algoritma", "Enkripsi", "Jaringan", "Antarmuka"],
+        answer: 0,
+        explanation: "Algoritma adalah urutan langkah logis dan terstruktur untuk menyelesaikan masalah atau mencapai tujuan."
+      },
+      {
+        topic: "Berpikir Komputasional",
+        prompt: "Membagi masalah besar menjadi beberapa bagian kecil agar lebih mudah dikerjakan merupakan teknik …",
+        options: ["Simulasi", "Dekomposisi", "Kompresi", "Duplikasi"],
+        answer: 1,
+        explanation: "Dekomposisi memecah masalah kompleks menjadi bagian-bagian lebih kecil yang lebih mudah dipahami dan diselesaikan."
+      },
+      {
+        topic: "Data dan Informasi",
+        prompt: "Manakah yang paling tepat disebut sebagai informasi, bukan sekadar data mentah?",
+        options: [
+          "Angka nilai: 78, 85, 90, dan 87",
+          "Daftar angka yang belum dikelompokkan",
+          "Rata-rata nilai kelas adalah 85",
+          "Empat sel kosong pada lembar kerja"
+        ],
+        answer: 2,
+        explanation: "Informasi adalah data yang telah diolah sehingga memiliki makna. Rata-rata merangkum kumpulan nilai menjadi sesuatu yang mudah dipahami."
+      },
+      {
+        topic: "Aplikasi Perkantoran",
+        prompt: "Pada aplikasi spreadsheet, rumus untuk menjumlahkan nilai dari sel B2 sampai B6 adalah …",
+        options: ["=SUM(B2:B6)", "=COUNT(B2-B6)", "=ADD(B2;B6)", "=TOTAL(B2:B6)"],
+        answer: 0,
+        explanation: "Fungsi SUM digunakan untuk menjumlahkan nilai. Tanda titik dua pada B2:B6 menunjukkan rentang sel."
+      },
+      {
+        topic: "Aplikasi Perkantoran",
+        prompt: "Fitur spreadsheet yang paling sesuai untuk mengurutkan daftar nama dari A ke Z adalah …",
+        options: ["Filter warna", "Sortir menaik", "Gabungkan sel", "Format angka"],
+        answer: 1,
+        explanation: "Sortir menaik mengurutkan teks secara alfabetis dari A ke Z (dan angka dari kecil ke besar)."
+      },
+      {
+        topic: "Jaringan Komputer",
+        prompt: "Perangkat yang menghubungkan beberapa perangkat ke jaringan dan meneruskan data antarjaringan adalah …",
+        options: ["Pemindai", "Router", "Proyektor", "Mikrofon"],
+        answer: 1,
+        explanation: "Router meneruskan paket data di antara jaringan, misalnya menghubungkan jaringan rumah ke internet."
+      },
+      {
+        topic: "Jaringan Komputer",
+        prompt: "Apa fungsi utama alamat IP pada perangkat yang terhubung ke jaringan?",
+        options: [
+          "Menjadi identitas alamat perangkat agar dapat berkomunikasi",
+          "Memperbesar kapasitas baterai perangkat",
+          "Menghapus virus secara otomatis",
+          "Mengubah dokumen menjadi gambar"
+        ],
+        answer: 0,
+        explanation: "Alamat IP membantu mengidentifikasi perangkat dan menjadi alamat tujuan/pengirim saat data dikirim melalui jaringan."
+      },
+      {
+        topic: "Keamanan Digital",
+        prompt: "Kamu menerima pesan yang meminta kata sandi melalui tautan mencurigakan. Tindakan paling aman adalah …",
+        options: [
+          "Membalas dengan kata sandi agar akun tidak diblokir",
+          "Meneruskan tautan ke semua teman",
+          "Tidak membuka tautan dan memeriksa informasi melalui kanal resmi",
+          "Menggunakan kata sandi yang sama di situs itu"
+        ],
+        answer: 2,
+        explanation: "Permintaan kata sandi melalui tautan tak dikenal bisa menjadi phishing. Jangan masukkan data; cek langsung melalui situs atau kanal resmi."
+      },
+      {
+        topic: "Keamanan Digital",
+        prompt: "Manakah contoh kata sandi yang paling kuat?",
+        options: ["informatika", "12345678", "namasaya", "Kopi!Biru7-Langit"],
+        answer: 3,
+        explanation: "Kata sandi yang panjang dan memadukan huruf, angka, serta simbol lebih sulit ditebak. Gunakan kata sandi unik untuk setiap akun."
+      },
+      {
+        topic: "Perangkat Komputer",
+        prompt: "Komponen yang menjalankan instruksi dan mengolah data pada komputer adalah …",
+        options: ["CPU", "Monitor", "Keyboard", "Speaker"],
+        answer: 0,
+        explanation: "CPU (Central Processing Unit) memproses instruksi dan data. Monitor, keyboard, dan speaker masing-masing berfungsi sebagai perangkat keluaran atau masukan."
+      },
+      {
+        topic: "Pemrograman",
+        prompt: "Dalam pemrograman, perintah yang dijalankan berulang kali selama kondisi tertentu terpenuhi disebut …",
+        options: ["Variabel", "Perulangan (loop)", "Komentar", "Konstanta"],
+        answer: 1,
+        explanation: "Perulangan atau loop menjalankan sekumpulan instruksi berulang kali, biasanya berdasarkan jumlah atau kondisi tertentu."
+      },
+      {
+        topic: "Etika Digital",
+        prompt: "Sebelum membagikan foto teman ke media sosial, sebaiknya kamu …",
+        options: [
+          "Langsung membagikannya agar cepat viral",
+          "Meminta izin teman terlebih dahulu",
+          "Menambahkan lokasi rumahnya",
+          "Mengirimnya ke grup yang tidak dikenal"
+        ],
+        answer: 1,
+        explanation: "Menghormati privasi berarti meminta izin sebelum membagikan foto atau informasi pribadi orang lain."
+      }
+    ];
+
+    const setup = document.getElementById("setup");
+    const quiz = document.getElementById("quiz");
+    const result = document.getElementById("result");
+    const nameInput = document.getElementById("student-name");
+    const currentNumber = document.getElementById("current-number");
+    const answeredCount = document.getElementById("answered-count");
+    const progressTrack = document.querySelector(".progress-track");
+    const progressBar = document.getElementById("progress-bar");
+    const topic = document.getElementById("topic");
+    const questionText = document.getElementById("question");
+    const optionsContainer = document.getElementById("options");
+    const feedback = document.getElementById("feedback");
+    const nextButton = document.getElementById("next-button");
+
+    let questionIndex = 0;
+    let score = 0;
+    let hasAnswered = false;
+    let studentName = "";
+
+    function startQuiz() {
+      studentName = nameInput.value.trim();
+      questionIndex = 0;
+      score = 0;
+      hasAnswered = false;
+      setup.hidden = true;
+      result.hidden = true;
+      quiz.hidden = false;
+      renderQuestion();
+      document.getElementById("topic").focus?.();
+    }
+
+    function renderQuestion() {
+      const item = questions[questionIndex];
+      hasAnswered = false;
+      currentNumber.textContent = String(questionIndex + 1);
+      answeredCount.textContent = questionIndex + " dijawab";
+      topic.textContent = item.topic;
+      questionText.textContent = item.prompt;
+      feedback.textContent = "";
+      nextButton.disabled = true;
+      nextButton.innerHTML = questionIndex === questions.length - 1
+        ? "Lihat hasil <span aria-hidden=\"true\">✦</span>"
+        : "Soal berikutnya <span aria-hidden=\"true\">→</span>";
+      progressBar.style.width = (questionIndex / questions.length * 100) + "%";
+      progressTrack.setAttribute("aria-valuenow", String(questionIndex));
+      optionsContainer.replaceChildren();
+
+      item.options.forEach(function (optionText, optionIndex) {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "option";
+        button.setAttribute("aria-label", String.fromCharCode(65 + optionIndex) + ". " + optionText);
+
+        const key = document.createElement("span");
+        key.className = "option-key";
+        key.setAttribute("aria-hidden", "true");
+        key.textContent = String.fromCharCode(65 + optionIndex);
+
+        const label = document.createElement("span");
+        label.textContent = optionText;
+
+        button.append(key, label);
+        button.addEventListener("click", function () {
+          selectAnswer(optionIndex);
+        });
+        optionsContainer.append(button);
+      });
+    }
+
+    function selectAnswer(selectedIndex) {
+      if (hasAnswered) return;
+
+      hasAnswered = true;
+      const item = questions[questionIndex];
+      const optionButtons = optionsContainer.querySelectorAll(".option");
+
+      optionButtons.forEach(function (button, index) {
+        button.disabled = true;
+        if (index === item.answer) button.classList.add("correct");
+      });
+
+      if (selectedIndex === item.answer) {
+        score += 1;
+        feedback.innerHTML = "<strong>Benar!</strong> " + item.explanation;
+      } else {
+        optionButtons[selectedIndex].classList.add("incorrect");
+        feedback.innerHTML = "<strong>Belum tepat.</strong> " + item.explanation;
+      }
+
+      answeredCount.textContent = (questionIndex + 1) + " dijawab";
+      progressBar.style.width = ((questionIndex + 1) / questions.length * 100) + "%";
+      progressTrack.setAttribute("aria-valuenow", String(questionIndex + 1));
+      nextButton.disabled = false;
+      nextButton.focus();
+    }
+
+    function showResult() {
+      quiz.hidden = true;
+      result.hidden = false;
+
+      const percentage = Math.round(score / questions.length * 100);
+      document.getElementById("score").textContent = score + "/" + questions.length;
+      document.getElementById("result-title").textContent = studentName
+        ? "Kuis selesai, " + studentName + "!"
+        : "Kuis selesai!";
+      document.getElementById("score-caption").textContent =
+        "Jawaban benar · " + percentage + "%";
+
+      let message;
+      if (percentage >= 85) {
+        message = "Hebat! Pemahaman Informatikamu sudah kuat. Terus gunakan teknologi secara kreatif dan bertanggung jawab.";
+      } else if (percentage >= 60) {
+        message = "Bagus! Kamu sudah memahami banyak konsep. Coba baca lagi pembahasan soal dan ulangi kuis untuk berlatih.";
+      } else {
+        message = "Tetap semangat! Setiap soal adalah kesempatan belajar. Baca pembahasan dengan saksama, lalu coba lagi.";
+      }
+
+      document.getElementById("result-message").textContent = message;
+      document.getElementById("retry-button").focus();
+    }
+
+    document.getElementById("start-button").addEventListener("click", startQuiz);
+
+    nextButton.addEventListener("click", function () {
+      if (!hasAnswered) return;
+
+      if (questionIndex === questions.length - 1) {
+        showResult();
+      } else {
+        questionIndex += 1;
+        renderQuestion();
+        questionText.focus?.();
+      }
+    });
+
+    document.getElementById("retry-button").addEventListener("click", function () {
+      startQuiz();
+      quiz.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+
+    document.getElementById("home-button").addEventListener("click", function () {
+      result.hidden = true;
+      setup.hidden = false;
+      nameInput.focus();
+      setup.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  </script>
+</body>
+</html>
