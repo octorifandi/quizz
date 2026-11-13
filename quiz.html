@@ -1,0 +1,20 @@
+from pathlib import Path
+
+html = r'''<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quiz Informatika — Perangkat Keras Komputer</title>
+<style>
+:root{--bg:#0b1220;--panel:#121d31;--panel2:#182640;--text:#eef4ff;--muted:#a9b8d0;--accent:#5eead4;--accent2:#60a5fa;--good:#34d399;--bad:#fb7185}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(circle at top left,#18365a 0,#0b1220 48%,#080d18 100%);font-family:Arial,Helvetica,sans-serif;color:var(--text);padding:24px}
+.wrap{max-width:900px;margin:auto}.top{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:18px}.tag{font-size:12px;letter-spacing:1.5px;color:var(--accent);font-weight:bold;text-transform:uppercase}.school{font-size:12px;color:var(--muted);text-align:right}
+.card{background:rgba(18,29,49,.94);border:1px solid #2a3b58;border-radius:22px;padding:clamp(20px,4vw,36px);box-shadow:0 20px 60px #0005}
+h1{font-size:clamp(28px,5vw,44px);line-height:1.1;margin:10px 0 12px}p{color:var(--muted);line-height:1.6}.accent{color:var(--accent)}
+button,input{font:inherit}button{border:0;border-radius:12px;padding:13px 19px;font-weight:bold;cursor:pointer;transition:.18s}button:hover{transform:translateY(-2px);filter:brightness(1.08)}button:disabled{opacity:.45;cursor:not-allowed;transform:none}
+.primary{background:linear-gradient(110deg,var(--accent),#60a5fa);color:#071522}.secondary{background:#263854;color:var(--text);border:1px solid #3b5274}
+.field{display:grid;gap:8px;margin:22px 0}.field label{font-weight:bold}.field input{background:#0b1628;color:white;border:1px solid #3b5274;border-radius:12px;padding:14px}
+.info{display:flex;gap:10px;flex-wrap:wrap;margin:22px 0}.pill{background:#20334f;color:#cfe2ff;padding:9px 13px;border-radius:999px;font-size:13px}
+.hidden{display:none!important}.quiz-head{display:flex;justify-content:space-between;align-items:center;gap:14px;margin-bottom:18px}.progress{height:8px;background:#263854;border-radius:20px;overflow:hidden;margin:12px 0 24px}.bar{height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width .25s}
+.qnum{font-size:13px;color:var(--accent);font-weight:bold}.question{font-size:clamp(20px,3vw,27px);line-height:1.35;margin:10px 0 22px}.options{display:grid;gap:12px}.option{width:100%;text-align:left;background:#1a2a43;border:1px solid #354b6c;color:var(--text);padding:16px;border-radius:14px;display:flex;gap:13px;align-items:center}.option .letter{width:30px;height:30px;flex:none;display:grid;place-items:center;border-radius:9px;background:#2c4263;color:
