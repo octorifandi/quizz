@@ -1,92 +1,10 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Quiz Informatika — Perangkat Keras Komputer</title>
-<style>
-:root{--bg:#0b1220;--panel:#121d31;--panel2:#182640;--text:#eef4ff;--muted:#a9b8d0;--accent:#5eead4;--accent2:#60a5fa;--good:#34d399;--bad:#fb7185}
-*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(circle at top left,#18365a 0,#0b1220 48%,#080d18 100%);font-family:Arial,Helvetica,sans-serif;color:var(--text);padding:24px}
-.wrap{max-width:900px;margin:auto}.top{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:18px}.tag{font-size:12px;letter-spacing:1.5px;color:var(--accent);font-weight:bold;text-transform:uppercase}.school{font-size:12px;color:var(--muted);text-align:right}
-.card{background:rgba(18,29,49,.94);border:1px solid #2a3b58;border-radius:22px;padding:clamp(20px,4vw,36px);box-shadow:0 20px 60px #0005}
-h1{font-size:clamp(28px,5vw,44px);line-height:1.1;margin:10px 0 12px}p{color:var(--muted);line-height:1.6}.accent{color:var(--accent)}
-button,input{font:inherit}button{border:0;border-radius:12px;padding:13px 19px;font-weight:bold;cursor:pointer;transition:.18s}button:hover{transform:translateY(-2px);filter:brightness(1.08)}button:disabled{opacity:.45;cursor:not-allowed;transform:none}
-.primary{background:linear-gradient(110deg,var(--accent),#60a5fa);color:#071522}.secondary{background:#263854;color:var(--text);border:1px solid #3b5274}
-.field{display:grid;gap:8px;margin:22px 0}.field label{font-weight:bold}.field input{background:#0b1628;color:white;border:1px solid #3b5274;border-radius:12px;padding:14px}
-.info{display:flex;gap:10px;flex-wrap:wrap;margin:22px 0}.pill{background:#20334f;color:#cfe2ff;padding:9px 13px;border-radius:999px;font-size:13px}
-.hidden{display:none!important}.quiz-head{display:flex;justify-content:space-between;align-items:center;gap:14px;margin-bottom:18px}.progress{height:8px;background:#263854;border-radius:20px;overflow:hidden;margin:12px 0 24px}.bar{height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width .25s}
-.qnum{font-size:13px;color:var(--accent);font-weight:bold}.question{font-size:clamp(20px,3vw,27px);line-height:1.35;margin:10px 0 22px}.options{display:grid;gap:12px}.option{width:100%;text-align:left;background:#1a2a43;border:1px solid #354b6c;color:var(--text);padding:16px;border-radius:14px;display:flex;gap:13px;align-items:center}.option .letter{width:30px;height:30px;flex:none;display:grid;place-items:center;border-radius:9px;background:#2c4263;color:var(--accent);font-weight:bold}.option.selected{border-color:var(--accent);background:#17394a}.option.correct{border-color:var(--good);background:#123b35}.option.wrong{border-color:var(--bad);background:#482434}.feedback{margin-top:16px;padding:14px;border-radius:12px;background:#20334f;color:#dceaff;line-height:1.5}.actions{display:flex;justify-content:space-between;gap:12px;margin-top:22px}.result{text-align:center}.score{font-size:clamp(48px,10vw,76px);font-weight:900;color:var(--accent);margin:12px}.review{text-align:left;margin-top:26px}.review-item{padding:14px 0;border-bottom:1px solid #2c3d59}.review-item strong{display:block;margin-bottom:6px}.small{font-size:13px;color:var(--muted)}footer{text-align:center;color:#8293ad;font-size:12px;margin:18px 0}
-@media(max-width:560px){body{padding:12px}.top{align-items:flex-start}.school{max-width:130px}.actions button{flex:1}}
-</style>
-</head>
-<body>
-<div class="wrap">
-  <div class="top"><div><div class="tag">Informatika • Fase D</div><div class="small">Kuis interaktif</div></div><div class="school">PERANGKAT KERAS KOMPUTER<br>SMP SWASTA CINTA RAKYAT 1</div></div>
-  <main class="card">
-    <section id="start">
-      <div class="tag">Tantangan pengetahuan</div>
-      <h1>Kenali <span class="accent">Perangkat Keras</span> Komputer</h1>
-      <p>Uji pemahamanmu tentang komponen komputer, fungsi perangkat input, proses, output, dan penyimpanan. Baca setiap soal dengan teliti sebelum memilih jawaban.</p>
-      <div class="info"><span class="pill">10 soal pilihan ganda</span><span class="pill">Skor otomatis</span><span class="pill">Pembahasan jawaban</span></div>
-      <div class="field"><label for="student">Nama peserta didik</label><input id="student" type="text" placeholder="Masukkan nama lengkap..." maxlength="60"></div>
-      <button class="primary" id="startBtn">Mulai Kuis →</button>
-    </section>
-    <section id="game" class="hidden">
-      <div class="quiz-head"><div><div class="qnum" id="counter">SOAL 1 DARI 10</div><div class="small" id="studentLabel"></div></div><div class="pill" id="scoreLive">Benar: 0</div></div>
-      <div class="progress"><div class="bar" id="bar"></div></div>
-      <div class="question" id="question"></div>
-      <div class="options" id="options"></div>
-      <div id="feedback" class="feedback hidden" aria-live="polite"></div>
-      <div class="actions"><button class="secondary" id="quitBtn">Akhiri</button><button class="primary" id="nextBtn" disabled>Jawaban berikutnya</button></div>
-    </section>
-    <section id="result" class="hidden result">
-      <div class="tag">Kuis selesai</div><h1>Hasil Belajarmu</h1><div id="finalName"></div>
-      <div class="score" id="finalScore">0/10</div><h2 id="grade"></h2><p id="message"></p>
-      <button class="primary" id="againBtn">Coba Lagi ↻</button>
-      <button class="secondary" id="printBtn">Cetak Hasil</button>
-      <div class="review" id="review"></div>
-    </section>
-  </main>
-  <footer>Kerjakan secara mandiri • Semangat belajar dan terus eksplorasi teknologi!</footer>
-</div>
-<script>
-const questions = [
- {q:"Perangkat keras komputer adalah ...",a:["Program yang menjalankan komputer","Bagian fisik komputer yang dapat dilihat dan disentuh","Kumpulan data yang tersimpan di internet","Perintah yang diberikan kepada komputer"],c:1,e:"Perangkat keras (hardware) merupakan komponen fisik komputer, misalnya monitor, keyboard, RAM, dan prosesor."},
- {q:"Perangkat yang digunakan untuk memasukkan teks dan angka ke komputer adalah ...",a:["Monitor","Speaker","Keyboard","Proyektor"],c:2,e:"Keyboard termasuk perangkat input karena digunakan untuk memasukkan huruf, angka, dan perintah."},
- {q:"Komponen yang sering disebut sebagai 'otak komputer' karena memproses instruksi adalah ...",a:["CPU/Prosesor","Mouse","Hard disk","Monitor"],c:0,e:"CPU atau prosesor menjalankan instruksi dan mengolah data dalam sistem komputer."},
- {q:"Ketika komputer menampilkan tulisan, gambar, dan video kepada pengguna, perangkat output yang paling umum digunakan adalah ...",a:["Scanner","Mikrofon","Keyboard","Monitor"],c:3,e:"Monitor menampilkan informasi secara visual sehingga termasuk perangkat output."},
- {q:"Fungsi utama RAM pada komputer adalah ...",a:["Mencetak dokumen","Menyimpan data sementara saat program berjalan","Menghubungkan komputer ke listrik","Menghasilkan suara"],c:1,e:"RAM menyimpan data sementara yang sedang digunakan. Isinya umumnya hilang ketika komputer dimatikan."},
- {q:"Perangkat yang digunakan untuk menggerakkan penunjuk (pointer) pada layar adalah ...",a:["Mouse","Printer","Flashdisk","Webcam"],c:0,e:"Mouse merupakan perangkat input untuk menggerakkan pointer dan memilih objek pada layar."},
- {q:"Manakah perangkat yang berfungsi menyimpan data dalam jangka panjang?",a:["RAM","Cache","SSD","Register CPU"],c:2,e:"SSD adalah media penyimpanan sekunder yang menyimpan sistem operasi, aplikasi, dan berkas meskipun komputer dimatikan."},
- {q:"Seorang siswa ingin mengubah dokumen digital menjadi lembaran kertas. Perangkat yang dibutuhkan adalah ...",a:["Scanner","Printer","Microphone","Joystick"],c:1,e:"Printer menghasilkan keluaran berupa cetakan di kertas, sehingga termasuk perangkat output."},
- {q:"Perangkat yang berfungsi menangkap suara agar dapat direkam ke komputer adalah ...",a:["Speaker","Monitor","Mikrofon","Proyektor"],c:2,e:"Mikrofon menangkap suara dan mengubahnya menjadi sinyal yang dapat diproses komputer. Ini adalah perangkat input."},
- {q:"Komputer menyala, tetapi layar tidak menampilkan gambar. Komponen yang paling langsung digunakan untuk menampilkan gambar ke monitor adalah ...",a:["Kartu grafis (GPU)","Keyboard","Flashdisk","Speaker"],c:0,e:"GPU atau kartu grafis memproses dan menghasilkan keluaran visual untuk ditampilkan pada monitor."}
-];
-let index=0, answers=[], name="";
-const $=id=>document.getElementById(id);
-function show(section){["start","game","result"].forEach(s=>$(s).classList.toggle("hidden",s!==section))}
-function begin(){name=$("student").value.trim()||"Peserta didik";index=0;answers=[];$("studentLabel").textContent="Peserta: "+name;show("game");render()}
-function render(){
- const item=questions[index];$("counter").textContent=`SOAL ${index+1} DARI ${questions.length}`;$("bar").style.width=`${index/questions.length*100}%`;$("question").textContent=item.q;$("options").innerHTML="";$("feedback").classList.add("hidden");$("nextBtn").disabled=true;$("nextBtn").textContent=index===questions.length-1?"Lihat Hasil":"Jawaban berikutnya";
- $("scoreLive").textContent="Benar: "+answers.filter((v,i)=>v===questions[i].c).length;
- item.a.forEach((choice,i)=>{const b=document.createElement("button");b.className="option";b.innerHTML=`<span class="letter">${"ABCD"[i]}</span><span>${choice}</span>`;b.onclick=()=>select(i);$("options").appendChild(b)});
-}
-function select(choice){
- if(answers[index]!==undefined)return;answers[index]=choice;const item=questions[index];[...$("options").children].forEach((b,i)=>{b.disabled=true;if(i===item.c)b.classList.add("correct");if(i===choice&&choice!==item.c)b.classList.add("wrong")});
- const ok=choice===item.c;$("feedback").classList.remove("hidden");$("feedback").innerHTML=`<strong>${ok?"✓ Benar!":"✕ Belum tepat."}</strong> ${item.e}`;$("nextBtn").disabled=false;
- $("scoreLive").textContent="Benar: "+answers.filter((v,i)=>v===questions[i].c).length;
-}
-function finish(){
- const total=answers.filter((v,i)=>v===questions[i].c).length,percent=total*10;
- $("bar").style.width="100%";$("finalName").textContent="Nama: "+name;$("finalScore").textContent=total+"/"+questions.length;
- $("grade").textContent=percent>=90?"Luar biasa!":percent>=70?"Bagus!":percent>=50?"Tetap semangat!":"Ayo belajar lagi!";
- $("message").textContent=`Nilaimu ${percent}. ${percent>=70?"Kamu sudah memahami banyak konsep perangkat keras komputer.":"Pelajari kembali fungsi setiap perangkat, lalu coba kuis sekali lagi."}`;
- $("review").innerHTML="<h2>Ulasan Jawaban</h2>"+questions.map((q,i)=>`<div class="review-item"><strong>${i+1}. ${q.q}</strong><div class="small">Jawabanmu: ${q.a[answers[i]]} ${answers[i]===q.c?"✓":"✕"}<br>Jawaban benar: ${q.a[q.c]}<br>${q.e}</div></div>`).join("");
- show("result");
-}
-$("startBtn").onclick=begin;$("nextBtn").onclick=()=>{if(index<questions.length-1){index++;render()}else finish()};
-$("quitBtn").onclick=()=>{if(confirm("Akhiri kuis dan lihat hasil sementara?")){while(answers.length<questions.length)answers.push(-1);finish()}};
-$("againBtn").onclick=()=>{show("start");$("student").value=name};$("printBtn").onclick=()=>window.print();
-</script>
-</body>
-</html>
+Buatkan web-app dalam SATU file HTML
+(HTML, CSS, dan JavaScript digabung),
+tanpa server dan tanpa instalasi.
+
+Tujuan  : [kuis 10 soal gerak lurus]
+Pengguna: siswa SMA, dipakai di HP
+Fitur   : 1) [...]  2) [...]  3) [...]
+
+Tampilan sederhana dan rapi.
+Semua teks dan komentar kode dalam bahasa Indonesia.
