@@ -1,6 +1,4 @@
-from pathlib import Path
-
-html = r'''<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
 <meta charset="UTF-8">
@@ -91,7 +89,4 @@ $("quitBtn").onclick=()=>{if(confirm("Akhiri kuis dan lihat hasil sementara?")){
 $("againBtn").onclick=()=>{show("start");$("student").value=name};$("printBtn").onclick=()=>window.print();
 </script>
 </body>
-</html>'''
-path = Path("/mnt/data/kuis_informatika_perangkat_keras.html")
-path.write_text(html, encoding="utf-8")
-print(f"File dibuat: {path} ({path.stat().st_size} bytes)")
+</html>
